@@ -603,6 +603,16 @@
       helpBackdrop.addEventListener("click",()=>closeOverlay(helpOverlay));
 
       adminBtn.addEventListener("click",openAdmin);
+      adminLoginCancel.addEventListener("click",()=>closeOverlay(adminLoginOverlay));
+      adminLoginGo.addEventListener("click",()=>{
+        const pass=String(adminLoginPass.value||"");
+        if(String(pass)!==String(state.admin?.password||"")){alert("رمز اشتباه است.");return;}
+        closeOverlay(adminLoginOverlay);
+        buildAdminUI();
+        openOverlay(adminOverlay);
+      });
+      adminLoginPass.addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ adminLoginGo.click(); }});
+
       adminClose.addEventListener("click",()=>closeOverlay(adminOverlay));
       adminBackdrop.addEventListener("click",()=>closeOverlay(adminOverlay));
       adminCancel.addEventListener("click",()=>closeOverlay(adminOverlay));
@@ -974,14 +984,11 @@
     }
 
     function openAdmin(){
+      // ورود داخل خود سایت (بدون پنجره‌های مرورگر)
       adminMsg.textContent="";
-      const pass=prompt("رمز مدیریت را وارد کن:");
-      if(pass===null) return;
-      if(String(pass)!==String(state.admin.password||"")){alert("رمز اشتباه است.");return;}
-      // mark this browser as owner so public state.json will not override your local edits
-      localStorage.setItem(OWNER_KEY,"1");
-      buildAdminUI();
-      openOverlay(adminOverlay);
+      adminLoginPass.value="";
+      openOverlay(adminLoginOverlay);
+      adminLoginPass.focus();
     }
 
     function buildAdminUI(){
